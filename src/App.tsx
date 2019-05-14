@@ -1,12 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const App: React.FC = () => {
 
   const [count, setCount] = useState(0)
   const [isOn, toggleOn] = useState(false)
 
+
+  // useeffect is called on every render
+  useEffect(() => {
+    document.title = `You clicked ${count} times`
+  })
+
   return (
     <>
+      <h2>Counter</h2>
       <button onClick={() => setCount((prevCount) => prevCount + 1)}>
         I was clicked {count} times!
       </button>
