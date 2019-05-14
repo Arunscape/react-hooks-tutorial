@@ -5,7 +5,7 @@ const App: React.FC = () => {
   const [count, setCount] = useState(0)
 
   return (
-    <button onClick={() => setCount(count + 1)}>
+    <button onClick={() => setCount((prevCount) => prevCount + 1)}>
       I was clicked {count} times!
         </button>
   )
