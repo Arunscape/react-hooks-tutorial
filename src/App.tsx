@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from 'react'
 
 const App: React.FC = () => {
-  return <div className="App">Hey</div>;
-};
+
+  const [count, setCount] = useState(0)
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      I was clicked {count} times!
+        </button>
+  )
+}
 
 export default App;
