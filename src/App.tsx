@@ -11,14 +11,16 @@ const App: React.FC = () => {
         I was clicked {count} times!
       </button>
       <h2>Toggle this</h2>
-      <div style={{
-        height: "50px",
-        width: "50px",
-        background: isOn ? "yellow" : "grey"
-      }}
-        onClick={() => toggleOn((prev) => !prev)}>
+      <img
+        style={{
+          height: "50px",
+          width: "50px"
+        }}
+        src={isOn ? 'https://icon.now.sh/highlight/fd0' : 'https://icon.now.sh/highlight/aaa'}
 
-      </div>
+        onClick={() => toggleOn((prev) => !prev)}
+        alt="Flashlight"
+      />
     </>
   )
 
