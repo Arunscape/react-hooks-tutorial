@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { functionTypeParam } from '@babel/types';
+import { watch } from 'fs';
 
 const App: React.FC = () => {
 
@@ -7,11 +8,25 @@ const App: React.FC = () => {
   const [isOn, toggleOn] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [online, setOnlineStatus] = useState(navigator.onLine)
+  const [{ lat, lon, speed }, setLocation] = useState({ lat: 0, lon: 0, speed: 0 })
+  let mounted = true; //because handlegeolocation doesn't have a nice way to unsubscribe
 
 
   const handleMouseMove = (event: { pageX: number, pageY: number }) => setMousePosition({ x: event.pageX, y: event.pageY })
   const handleOnline = () => setOnlineStatus(true)
   const handleOffline = () => setOnlineStatus(false)
+  const handleGeolocation = (event: any) => {
+
+    if (!mounted) { return }
+
+    setLocation(
+      {
+        lat: event.coords.longitude,
+        lon: event.coords.longitude,
+        speed: event.coords.speed
+      })
+
+  }
 
   // useeffect is called on every render
   useEffect(() => {
@@ -20,6 +35,8 @@ const App: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
+    navigator.geolocation.getCurrentPosition(handleGeolocation)
+    const watchId = navigator.geolocation.watchPosition(handleGeolocation)
 
     // tell useeffect to do something before unmount, works like componentWillUnmount on steroids
     // will run when the component unmounts AND before re-render
@@ -27,6 +44,9 @@ const App: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
+      navigator.geolocation.clearWatch(watchId)
+      mounted = false;
+
 
     }
   },
@@ -56,6 +76,11 @@ const App: React.FC = () => {
 
       <h2>Network status</h2>
       <p>You are {online ? 'online' : 'offline'}.</p>
+
+      <h2>Geolocation</h2>
+      <p>Your lattitude is {lat}</p>
+      <p>Your longitude is {lon}</p>
+      <p>Your speed is {speed} </p>
     </>
   )
 
