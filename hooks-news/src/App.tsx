@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios'
 
 interface result {
@@ -19,6 +19,7 @@ const App: React.FC = () => {
     getResults()
 
   }, []) //updates on component mount and when query changes
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const getResults = async () => {
     const res = await axios.get(`https://hn.algolia.com/api/v1/search?query=${query}`)
@@ -36,12 +37,24 @@ const App: React.FC = () => {
         <input
           type="text"
           onChange={event => setQuery(event.target.value)}
-          value={query} />
+          value={query}
+          ref={searchInputRef} />
 
         <button
           type="submit">
           Search
-      </button>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setQuery("")
+            if (searchInputRef.current) {
+              searchInputRef.current.focus()
+            }
+          }}>
+          Clear
+        </button>
         <ul>
           {results.map(r => (
             <li key={r.objectID}>
