@@ -12,6 +12,7 @@ const App: React.FC = () => {
 
   const [query, setQuery] = useState<string>('react hooks')
   const [results, setResults] = useState<result[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   useEffect(() => {
     // axios.get('https://hn.algolia.com/api/v1/search?query=reacthooks')
     //   .then(res => res.data)
@@ -22,8 +23,10 @@ const App: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   const getResults = async () => {
+    setLoading(true)
     const res = await axios.get(`https://hn.algolia.com/api/v1/search?query=${query}`)
     setResults(res.data.hits)
+    setLoading(false)
   }
 
   return (
@@ -55,14 +58,18 @@ const App: React.FC = () => {
           }}>
           Clear
         </button>
-        <ul>
-          {results.map(r => (
-            <li key={r.objectID}>
-              <a href={r.url}> {r.title}</a>
-            </li>
-          ))}
-        </ul>
       </form>
+
+      {loading ? <div> Loading... </div> :
+        (
+          <ul>
+            {results.map(r => (
+              <li key={r.objectID}>
+                <a href={r.url}> {r.title}</a>
+              </li>
+            ))}
+          </ul>
+        )}
     </>
   );
 }
