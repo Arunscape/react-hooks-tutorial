@@ -7,12 +7,16 @@ interface result {
   objectID: any
 }
 
+interface error {
+  message: string
+}
 const App: React.FC = () => {
 
 
   const [query, setQuery] = useState<string>('react hooks')
   const [results, setResults] = useState<result[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const [error, setErr] = useState<error | null>(null)
   useEffect(() => {
     // axios.get('https://hn.algolia.com/api/v1/search?query=reacthooks')
     //   .then(res => res.data)
@@ -24,8 +28,15 @@ const App: React.FC = () => {
 
   const getResults = async () => {
     setLoading(true)
-    const res = await axios.get(`https://hn.algolia.com/api/v1/search?query=${query}`)
-    setResults(res.data.hits)
+
+    try {
+
+      const res = await axios.get(`https://hn.algolia.com/api/v1/search?query=${query}`)
+      setResults(res.data.hits)
+    }
+    catch (e) {
+      setErr(e)
+    }
     setLoading(false)
   }
 
@@ -70,6 +81,10 @@ const App: React.FC = () => {
             ))}
           </ul>
         )}
+
+      {error && (<div>
+        {error.message}
+      </div>)}
     </>
   );
 }
